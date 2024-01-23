@@ -1,0 +1,17 @@
+{
+  "name": "api-orange-portfolio",
+  "version": "1.0.0",
+  "description": "REST API for the Orange Portfolio Web App",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+  "keywords": [],
+  "author": "Gabriel Rodrigues (@gabzoom)",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.3"
+  }
+}
