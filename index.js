@@ -1,9 +1,13 @@
 const express = require('express');
-const userRoute = require('./src/routes/user.route');
+const userRouter = require('./src/routes/user.route');
+const connectDatabase = require('./src/database/db')
 
 const app = express();
+connectDatabase();
 const port = 3000;
 
-app.use('/users', userRoute);
+app.use(express.json());
+
+app.use('/users', userRouter);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
