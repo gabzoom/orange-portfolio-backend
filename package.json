@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "REST API for the Orange Portfolio Web App",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index",
     "dev": "nodemon index"

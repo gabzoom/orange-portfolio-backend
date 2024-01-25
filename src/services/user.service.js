@@ -1,4 +1,4 @@
-const User = require('../models/User');
+import User from '../models/User.js';
 
 const findAll = () => User.find();
 
@@ -11,9 +11,4 @@ const update = (id, name, lastName, email, password, country, avatar) => User.fi
     { name, lastName, email, password, country, avatar }
 );
 
-module.exports = {
-    findAll,
-    findById,
-    create,
-    update
-}
+export default { findAll, findById, create, update }
