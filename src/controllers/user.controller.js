@@ -1,5 +1,4 @@
 const userService = require('../services/user.service');
-const mongoose = require('mongoose');
 
 const findAllUsers = async (req, res) => {
   const users = await userService.findAll();
@@ -12,17 +11,7 @@ const findAllUsers = async (req, res) => {
 };
 
 const findUserById = async (req, res) => {
-  const id = req.params.id;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).send({ message: "ID inválido" })
-  }
-
-  const user = await userService.findById(id);
-
-  if (!user) {
-    return res.status(400).send({ message: "Usuário não encontrado" })
-  }
+  const user = req.user;
 
   res.send(user);
 };
@@ -51,8 +40,24 @@ const createUser = async (req, res) => {
   });
 };
 
+const updateUser = async (req, res) => {
+  const { name, lastName, email, password, country, avatar } = req.body;
+
+  if (!name && !lastName && !email && !password && !country && !avatar) {
+    res.status(400).send({ message: "Preencha ao menos um campo para atualização" })
+  };
+
+  const { id, user } = req;
+
+  await userService.update(id, name, lastName, email, password, country, avatar
+  );
+
+  res.send({ message: "Usuário atualizado com sucesso" })
+};
+
 module.exports = {
   findAllUsers,
   findUserById,
-  createUser
+  createUser,
+  updateUser
 };
