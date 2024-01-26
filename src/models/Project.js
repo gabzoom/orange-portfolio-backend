@@ -13,10 +13,10 @@ const projectSchema = new Schema(
             ref: 'User',
             required: true,
         },
-        creationDate: {
-            type: String,
-            default: () => moment().format("MM/YYYY")
-        }
+        createdAt: {
+            type: Date,
+            default: Date.now(),
+        },
     },
 );
 
