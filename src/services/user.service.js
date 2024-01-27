@@ -11,4 +11,6 @@ const update = (id, name, lastName, email, password, country, avatar) => User.fi
     { name, lastName, email, password, country, avatar }
 );
 
+
+
 export default { findAll, findById, create, update }

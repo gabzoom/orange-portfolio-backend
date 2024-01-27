@@ -1,12 +1,19 @@
 import express from 'express';
 import userController from '../controllers/user.controller.js';
 import { validId, validUser } from '../middlewares/global.middlewares.js';
+import { body } from 'express-validator';
+
 
 const router = express.Router();
 
+
 router.get("/", userController.findAllUsers);
 router.get("/:id", validId, validUser, userController.findUserById);
-router.post("/", userController.createUser);
-router.patch("/:id", validId, validUser, userController.updateUser);
+router.post("/", 
+body('email').isEmail().withMessage("use um email valido")
+,userController.createUser);
 
-export default router;
+router.patch("/:id", body('email').isEmail().withMessage("use um email valido")
+,validId, validUser, userController.updateUser);
+
+export default router;  

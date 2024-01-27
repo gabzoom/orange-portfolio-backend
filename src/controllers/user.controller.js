@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 import userService from '../services/user.service.js';
 
 const findAllUsers = async (req, res) => {
@@ -25,18 +26,28 @@ const findUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+  }
   try {
+    
     const { name, lastName, email, password } = req.body;
 
     if (!name || !lastName || !email || !password) {
       res.status(400).send({ message: "Preencha todos os campos para fazer o cadastro" });
     };
-
+    if(password.length <= 6){
+      res.status(400).send({ message: "a senha precisa de ter 6 caracteres ou mais"})
+    }
+   
     const user = await userService.create(req.body);
+
 
     if (!user) {
       return res.status(400).send({ message: "Erro na criação do usuário" });
     }
+        
 
     res.status(201).send({
       message: 'Usuário criado com sucesso',
@@ -53,6 +64,10 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ message: "Use um email valido" });
+  }
   try {
     const { name, lastName, email, password, country, avatar } = req.body;
 
@@ -60,6 +75,9 @@ const updateUser = async (req, res) => {
       res.status(400).send({ message: "Preencha ao menos um campo para atualização" });
     };
 
+    if(password.length <= 6){
+      res.status(400).send({ message: "a senha precisa de ter 6 caracteres ou mais"})
+    }
     const { id, user } = req;
 
     await userService.update(id, name, lastName, email, password, country, avatar);
