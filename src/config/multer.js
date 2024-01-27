@@ -4,7 +4,7 @@ import { extname } from 'path';
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'D:/uploads');
+        cb(null, "src/uploads/");
     },
     filename: function(req, file, cb) {
         cb(null, Date.now() + extname(file.originalname));
