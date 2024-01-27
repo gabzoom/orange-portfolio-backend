@@ -10,10 +10,17 @@ const router = express.Router();
 router.get("/", userController.findAllUsers);
 router.get("/:id", validId, validUser, userController.findUserById);
 router.post("/", 
-body('email').isEmail().withMessage("use um email valido")
+body('email').isEmail().withMessage("use um email valido"),
+body('name').isLength({min: 2}).withMessage("Use um nome válido"),
+body('lastName').isLength({min: 2}).withMessage("Use um sobrenome válido"),
+body('password').isLength({min: 6}).withMessage("use uma senha com mais de 6 caracteres")
 ,userController.createUser);
 
-router.patch("/:id", body('email').isEmail().withMessage("use um email valido")
+router.patch("/:id", 
+body('email').isEmail().withMessage("use um email valido"),
+body('name').isLength({min: 2}).withMessage("Use um nome válido"),
+body('lastName').isLength({min: 2}).withMessage("Use um sobrenome válido"),
+body('password').isLength({min: 6}).withMessage("use uma senha com mais de 6 caracteres")
 ,validId, validUser, userController.updateUser);
 
 export default router;  

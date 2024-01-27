@@ -66,7 +66,7 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).send({ message: "Use um email valido" });
+    return res.status(400).json({ errors: errors.array() });
   }
   try {
     const { name, lastName, email, password, country, avatar } = req.body;
@@ -75,9 +75,7 @@ const updateUser = async (req, res) => {
       res.status(400).send({ message: "Preencha ao menos um campo para atualização" });
     };
 
-    if(password.length <= 6){
-      res.status(400).send({ message: "a senha precisa de ter 6 caracteres ou mais"})
-    }
+ 
     const { id, user } = req;
 
     await userService.update(id, name, lastName, email, password, country, avatar);

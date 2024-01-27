@@ -33,21 +33,25 @@ const createProject = async (req, res) => {
         if (!title || !urlGithub || !description || !projectImage) {
             res.status(400).send({ message: "Preencha todos os campos obrigatórios para criar o projeto" });
         };
+   
+        const file =req.projectImage;
 
         const project = await projectService.create({
             title,
             urlGithub,
             description,
-            projectImage,
+            projectImage: file.path,
             tags,
-            user: { _id: "65b2789d35384d48e458ec8b" } //user vinculado manualmente para testes
+            user: { _id: "65b53f336eb3b000edc8dede" } //user vinculado manualmente para testes
             //o user dinâmico vai ser vinculado no front com os dados da Context
         });
+
+        
 
         if (!project) {
             return res.status(400).send({ message: "Erro na criação do projeto" });
         }
-
+        res.json({ projectImage, msg: "salva a imagem"});
         res.status(201).send("Projeto criado com sucesso");
     }
     catch (err) {
