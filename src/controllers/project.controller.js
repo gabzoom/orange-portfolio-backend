@@ -28,13 +28,15 @@ const findProjectById = async (req, res) => {
 
 const createProject = async (req, res) => {
     try {
-        const { title, urlGithub, description, projectImage, tags } = req.body;
+        const { title, urlGithub, description, tags } = req.body;
 
-        if (!title || !urlGithub || !description || !projectImage) {
+        if (!title || !urlGithub || !description ) {
             res.status(400).send({ message: "Preencha todos os campos obrigatórios para criar o projeto" });
         };
-   
-        const file =req.projectImage;
+        
+      
+
+        const file =req.file;
 
         const project = await projectService.create({
             title,
@@ -45,13 +47,15 @@ const createProject = async (req, res) => {
             user: { _id: "65b53f336eb3b000edc8dede" } //user vinculado manualmente para testes
             //o user dinâmico vai ser vinculado no front com os dados da Context
         });
+      
+        
 
         
 
         if (!project) {
             return res.status(400).send({ message: "Erro na criação do projeto" });
         }
-        res.json({ projectImage, msg: "salva a imagem"});
+
         res.status(201).send("Projeto criado com sucesso");
     }
     catch (err) {
