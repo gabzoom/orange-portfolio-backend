@@ -1,5 +1,7 @@
+import Project from '../models/Project.js';
 import projectService from '../services/project.service.js';
 import { validationResult } from 'express-validator';
+import fs from 'fs';
 const findAllProjects = async (req, res) => {
     try {
         const projects = await projectService.findAll();
@@ -87,7 +89,15 @@ const updateProject = async (req, res) => {
 
 const deleteProjectById = async (req, res) => {
     const { id } = req.params;
-    try {
+        try {
+    const project = await projectService.findById(id);
+
+            if(!id){
+                return res.status(404).json({message: "Projeto não encontrado"});
+            }
+
+        fs.unlinkSync(project.projectImage);
+        res.status(204).send('Projeto removido com sucesso');
         await projectService.deleteById(id);
         res.status(204).send('Projeto removido com sucesso');
     } catch (err) {
