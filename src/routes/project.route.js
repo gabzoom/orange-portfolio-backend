@@ -11,7 +11,8 @@ const router = express.Router();
 router.get("/", projectController.findAllProjects);
 router.get("/:id", validId, projectController.findProjectById);
 router.post("/", upload.single('file'),
-body('urlGithub').isURL().withMessage("use um link valido")
+body('urlGithub').isURL().withMessage("use um link valido"),
+body('file').isEmpty().withMessage("por favor selecione uma imagem válida")
 
 ,projectController.createProject);
 router.patch("/:id", validId, projectController.updateProject);

@@ -1,5 +1,5 @@
 import projectService from '../services/project.service.js';
-
+import { validationResult } from 'express-validator';
 const findAllProjects = async (req, res) => {
     try {
         const projects = await projectService.findAll();
@@ -27,6 +27,10 @@ const findProjectById = async (req, res) => {
 };
 
 const createProject = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     try {
         const { title, urlGithub, description, tags } = req.body;
 
