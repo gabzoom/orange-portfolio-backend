@@ -10,12 +10,19 @@ const router = express.Router();
 
 router.get("/", projectController.findAllProjects);
 router.get("/:id", validId, projectController.findProjectById);
-router.post("/", upload.single('file'),
-body('urlGithub').isURL().withMessage("use um link valido"),
-body('file').isEmpty().withMessage("por favor selecione uma imagem válida")
 
-,projectController.createProject);
-router.patch("/:id", validId, upload.single('file'), projectController.updateProject);
+router.post("/", upload.single('file'),//no front colocamos um filter para Cannot read properties of undefined (reading 'path')"
+body('urlGithub').isURL().withMessage("use um link valido"),
+body('title').isLength({min: 2}).withMessage("Use um nome válido"),
+body('description').isLength({min: 1}).withMessage("Coloque uma descrição"),
+projectController.createProject);
+
+router.patch("/:id", validId, upload.single('file'),
+body('urlGithub').isURL().withMessage("use um link valido"),
+body('title').isLength({min: 2}).withMessage("Use um nome válido"),
+body('description').isLength({min: 1}).withMessage("Coloque uma descrição"),
+ projectController.updateProject);
+ 
 router.delete("/:id", validId, projectController.deleteProjectById);
 
 export default router;

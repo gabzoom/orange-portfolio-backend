@@ -31,7 +31,7 @@ const findProjectById = async (req, res) => {
 const createProject = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return  res.status(400).json({ errors: errors.array() });
     }
     try {
         const { title, urlGithub, description, tags } = req.body;
@@ -54,13 +54,6 @@ const createProject = async (req, res) => {
             //o user dinâmico vai ser vinculado no front com os dados da Context
         });
       
-        
-
-        
-
-        if (!project) {
-            return res.status(400).send({ message: "Erro na criação do projeto" });
-        }
 
         res.status(201).send("Projeto criado com sucesso");
     }
@@ -70,6 +63,10 @@ const createProject = async (req, res) => {
 };
 
 const updateProject = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return  res.status(400).json({ errors: errors.array() });
+    }
     try {
         const { title, urlGithub, description, tags } = req.body;
         
