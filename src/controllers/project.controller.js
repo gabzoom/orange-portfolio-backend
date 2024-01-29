@@ -71,15 +71,25 @@ const createProject = async (req, res) => {
 
 const updateProject = async (req, res) => {
     try {
-        const { title, urlGithub, description, projectImage, tags } = req.body;
+        const { title, urlGithub, description, tags } = req.body;
+        
 
-        if (!title && !urlGithub && !description && !projectImage && !tags) {
+        if (!title && !urlGithub && !description && !req.file && !tags) {
             res.status(400).send({ message: "Preencha ao menos um campo para atualização" });
         };
 
         const id = req.params.id;
 
-        await projectService.update(id, title, urlGithub, description, projectImage, tags);
+        const projectToUpdate = await projectService.findById(id);
+
+        if (req.file) {
+            // Excluir o arquivo existente
+            fs.unlinkSync(projectToUpdate.projectImage);
+            projectToUpdate.projectImage = req.file.path; // Atualizar com o novo arquivo
+        }
+
+
+        await projectService.update(id, title, urlGithub, description, projectToUpdate.projectImage, tags);
 
         res.send({ message: "Projeto atualizado com sucesso" });
     } catch (err) {

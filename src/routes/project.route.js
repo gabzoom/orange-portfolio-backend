@@ -15,7 +15,7 @@ body('urlGithub').isURL().withMessage("use um link valido"),
 body('file').isEmpty().withMessage("por favor selecione uma imagem válida")
 
 ,projectController.createProject);
-router.patch("/:id", validId, projectController.updateProject);
+router.patch("/:id", validId, upload.single('file'), projectController.updateProject);
 router.delete("/:id", validId, projectController.deleteProjectById);
 
 export default router;
