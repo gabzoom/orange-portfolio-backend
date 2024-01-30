@@ -62,14 +62,33 @@ const createProject = async (req, res) => {
     }
 };
 
+const isValidUrl = (url) => {
+    const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
+    return urlPattern.test(url);
+};
+
 const updateProject = async (req, res) => {
     try {
         const { title, urlGithub, description, tags } = req.body;
+
+
+       
+        if (urlGithub && !isValidUrl(urlGithub)) {
+            return res.status(400).send({ message: "A URL do GitHub não é válida" });
+        }
+       
 
         // Verificar se o título tem mais de 2 caracteres
         if (title && title.length <= 2) {
             return res.status(400).send({ message: "O título deve ter mais de 2 caracteres" });
         }
+        
+
+        // Verificar se o título tem mais de 2 caracteres
+        if (description && description.length <= 3) {
+            return res.status(400).send({ message: "A descrição deve ter mais de 2 caracteres" });
+        }
+
 
         if (!title && !urlGithub && !description && !req.file && !tags) {
             return res.status(400).send({ message: "Preencha ao menos um campo para atualização" });
