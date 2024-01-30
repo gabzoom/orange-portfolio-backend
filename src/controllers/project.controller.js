@@ -63,21 +63,25 @@ const createProject = async (req, res) => {
 };
 
 const updateProject = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return  res.status(400).json({ errors: errors.array() });
-    }
     try {
         const { title, urlGithub, description, tags } = req.body;
-        
+
+        // Verificar se o título tem mais de 2 caracteres
+        if (title && title.length <= 2) {
+            return res.status(400).send({ message: "O título deve ter mais de 2 caracteres" });
+        }
 
         if (!title && !urlGithub && !description && !req.file && !tags) {
-            res.status(400).send({ message: "Preencha ao menos um campo para atualização" });
-        };
+            return res.status(400).send({ message: "Preencha ao menos um campo para atualização" });
+        }
 
         const id = req.params.id;
 
         const projectToUpdate = await projectService.findById(id);
+
+        if (!projectToUpdate) {
+            return res.status(404).send({ message: "Projeto não encontrado" });
+        }
 
         if (req.file) {
             // Excluir o arquivo existente
@@ -85,8 +89,13 @@ const updateProject = async (req, res) => {
             projectToUpdate.projectImage = req.file.path; // Atualizar com o novo arquivo
         }
 
+        // Transforma as tags em um array
+        const tagArray = (typeof tags === 'string' && tags.trim() !== '') ? tags.split(',') : [];
 
-        await projectService.update(id, title, urlGithub, description, projectToUpdate.projectImage, tags);
+        // Atualiza as tags: combina as tags existentes com as novas
+        const updatedTags = [...new Set([...projectToUpdate.tags, ...tagArray])];
+
+        await projectService.update(id, title, urlGithub, description, projectToUpdate.projectImage, updatedTags);
 
         res.send({ message: "Projeto atualizado com sucesso" });
     } catch (err) {
