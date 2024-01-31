@@ -2,6 +2,10 @@ import Project from '../models/Project.js';
 import projectService from '../services/project.service.js';
 import { validationResult } from 'express-validator';
 import fs from 'fs';
+
+//a lógica que cada consulta de api passa 
+
+//aqui pega todos projetos do banco
 const findAllProjects = async (req, res) => {
     try {
         const projects = await projectService.findAll();
@@ -16,7 +20,7 @@ const findAllProjects = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 };
-
+//aqui passsa todos projetos pelo id do usuario
 const findProjectById = async (req, res) => {
     const id = req.params.id;
     try {
@@ -28,6 +32,10 @@ const findProjectById = async (req, res) => {
     }
 };
 
+
+
+
+//cria os projetos
 const createProject = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -61,12 +69,14 @@ const createProject = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 };
-
+//método que valida a url do update
 const isValidUrl = (url) => {
     const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
     return urlPattern.test(url);
 };
 
+//método que atualiza todos componentes do projeto que forem solicitados
+//até as imagens
 const updateProject = async (req, res) => {
     try {
         const { title, urlGithub, description, tags } = req.body;
@@ -121,7 +131,7 @@ const updateProject = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 };
-
+//apaga os projetos com o id dele sendo referenciado
 const deleteProjectById = async (req, res) => {
     const { id } = req.params;
         try {
