@@ -122,9 +122,9 @@ const updateProject = async (req, res) => {
         const tagArray = (typeof tags === 'string' && tags.trim() !== '') ? tags.split(',') : [];
 
         // Atualiza as tags: combina as tags existentes com as novas
-        const updatedTags = [...new Set([...projectToUpdate.tags, ...tagArray])];
+        //const updatedTags = [...new Set([...projectToUpdate.tags, ...tagArray])];
 
-        await projectService.update(id, title, urlGithub, description, projectToUpdate.projectImage, updatedTags);
+        await projectService.update(id, title, urlGithub, description, projectToUpdate.projectImage, tags);
 
         res.send({ message: "Projeto atualizado com sucesso" });
     } catch (err) {
@@ -134,14 +134,14 @@ const updateProject = async (req, res) => {
 //apaga os projetos com o id dele sendo referenciado
 const deleteProjectById = async (req, res) => {
     const { id } = req.params;
-        try {
-    const project = await projectService.findById(id);
+    try {
+        const project = await projectService.findById(id);
 
             if(!id){
                 return res.status(404).json({message: "Projeto não encontrado"});
             }
 
-        fs.unlinkSync(project.projectImage);
+        //fs.unlinkSync(project.projectImage);
         res.status(204).send('Projeto removido com sucesso');
         await projectService.deleteById(id);
         res.status(204).send('Projeto removido com sucesso');
