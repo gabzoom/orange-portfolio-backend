@@ -16,6 +16,6 @@ app.use(express.json());
 
 app.use('/users', userRouter);
 app.use('/projects', projectRouter);
-app.use('/src/uploads', express.static("src/uploads"))
+app.use('/files', express.static("src/uploads"))
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
