@@ -20,12 +20,31 @@ const findAllProjects = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 };
+
 //aqui passsa todos projetos pelo id do usuario
 const findProjectById = async (req, res) => {
     const id = req.params.id;
     try {
         const project = await projectService.findById(id);
 
+        if (!project) {
+            return res.status(404).send({ message: "Projeto não encontrado" });
+        }
+        res.send(project);
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+};
+
+
+const findProjectByUserId = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const project = await projectService.findByUserId(id);
+
+        if (!project) {
+            return res.status(404).send({ message: "Projeto não encontrado" });
+        }
         res.send(project);
     } catch (err) {
         res.status(500).send({ message: err.message });
@@ -42,7 +61,7 @@ const createProject = async (req, res) => {
         return  res.status(400).json({ errors: errors.array() });
     }
     try {
-        const { title, urlGithub, description, tags } = req.body;
+        const { title, urlGithub, description, tags, user } = req.body;
 
         if (!title || !urlGithub || !description ) {
             res.status(400).send({ message: "Preencha todos os campos obrigatórios para criar o projeto" });
@@ -58,8 +77,7 @@ const createProject = async (req, res) => {
             description,
             projectImage: file.path,
             tags,
-            user: { _id: "65b53f336eb3b000edc8dede" } //user vinculado manualmente para testes
-            //o user dinâmico vai ser vinculado no front com os dados da Context
+            user, 
         });
       
 
@@ -140,9 +158,9 @@ const deleteProjectById = async (req, res) => {
             if(!id){
                 return res.status(404).json({message: "Projeto não encontrado"});
             }
-
-        //fs.unlinkSync(project.projectImage);
-        res.status(204).send('Projeto removido com sucesso');
+            if (fs.existsSync(project.projectImage)) {
+                fs.unlinkSync(project.projectImage);
+            }
         await projectService.deleteById(id);
         res.status(204).send('Projeto removido com sucesso');
     } catch (err) {
@@ -150,4 +168,4 @@ const deleteProjectById = async (req, res) => {
     }
 };
 
-export default { findAllProjects, findProjectById, createProject, updateProject, deleteProjectById }
+export default { findAllProjects, findProjectById, findProjectByUserId, createProject, updateProject, deleteProjectById }

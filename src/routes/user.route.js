@@ -13,6 +13,7 @@ router.post("/",
 body('email').isEmail().withMessage("use um email valido"),
 body('name').isLength({min: 2, max: 150}).withMessage("Use um nome com mais de 2 caracteres"),
 body('lastName').isLength({min: 2, max: 150}).withMessage("Use um sobrenome com mais de 2 caracteres"),
+body('country').isLength({max: 150}).withMessage("País deve ter menos de 150 caracteres"),
 body('password').isLength({min: 6, max: 30}).withMessage("use uma senha com mais de 6 caracteres")
 ,userController.createUser);
 
@@ -20,6 +21,7 @@ router.patch("/:id",
 body('email').isEmail().withMessage("use um email valido"),
 body('name').isLength({min: 2, max: 150}).withMessage("Use um nome com mais de 2 caracteres"),
 body('lastName').isLength({min: 2, max: 150}).withMessage("Use um sobrenome com mais de 2 caracteres"),
+body('country').isLength({max: 150}).withMessage("País deve ter menos de 150 caracteres"),
 body('password').isLength({min: 6, max: 30}).withMessage("use uma senha com mais de 6 caracteres")
 ,validId, validUser, userController.updateUser);
 

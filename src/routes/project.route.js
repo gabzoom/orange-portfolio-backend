@@ -12,12 +12,12 @@ const router = express.Router();
 
 router.get("/", projectController.findAllProjects);
 router.get("/:id", validId, projectController.findProjectById);
+router.get("/user/:id", validId, projectController.findProjectByUserId);
 
 
 router.post("/", upload.single('file'),//no front colocamos um filter para Cannot read properties of undefined (reading 'path')"
 body('urlGithub').isURL().withMessage("use um link valido, exemplo: http://google.com"),
 body('title').isLength({min: 2, max: 150}).withMessage("Use um nome válido"),
-body('country').isLength({max: 150}).withMessage("País deve ter menos de 150 caracteres"),
 body('description').isLength({min: 1, max: 300}).withMessage("Coloque uma descrição com menos de 300 caracteres"),
 projectController.createProject);
 
