@@ -43,6 +43,7 @@ const createUser = async (req, res) => {
    
     const user = await userService.create(req.body);
 
+    const file = req.file;
 
     if (!user) {
       return res.status(400).send({ message: "Erro na criação do usuário" });
@@ -56,6 +57,7 @@ const createUser = async (req, res) => {
         name,
         lastName,
         email,
+        avatar: file.path,
       }
     });
   } catch (err) {
@@ -78,7 +80,19 @@ const updateUser = async (req, res) => {
  
     const { id, user } = req;
 
-    await userService.update(id, name, lastName, email, password, country, avatar);
+    const userToUpdate = await userService.findById(id);
+
+    if (!userToUpdate) {
+      return res.status(404).send({ message: "Projeto não encontrado" });
+  }
+
+  if (req.file) {
+    // Excluir o arquivo existente
+    fs.unlinkSync(userToUpdate.avatar);
+    userToUpdate.avatar = req.file.path; // Atualizar com o novo arquivo
+    }
+
+    await userService.update(id, name, lastName, email, password, country, userToUpdate.avatar);
 
     res.send({ message: "Usuário atualizado com sucesso" });
   } catch (err) {
