@@ -9,7 +9,7 @@ const projectSchema = new Schema(
         description: { type: String, required: true },
         projectImage: { type: String, required: true },
         user: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'User',
             required: true,
         },

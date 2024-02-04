@@ -1,5 +1,7 @@
-import { validationResult } from 'express-validator';
-import userService from '../services/user.service.js';
+import { validationResult } from "express-validator";
+import userService from "../services/user.service.js";
+import fs from "fs";
+
 
 const findAllUsers = async (req, res) => {
   try {
@@ -28,37 +30,31 @@ const findUserById = async (req, res) => {
 const createUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ errors: errors.array() });
   }
   try {
-    
-    const { name, lastName, email, password } = req.body;
+    const { name, lastName, email, _id } = req.body;
 
-    if (!name || !lastName || !email || !password) {
-      res.status(400).send({ message: "Preencha todos os campos para fazer o cadastro" });
-    };
-    if(password.length <= 6){
-      res.status(400).send({ message: "a senha precisa de ter 6 caracteres ou mais"})
+    if (!name || !lastName || !email || !_id ) {
+      res
+        .status(400)
+        .send({ message: "Preencha todos os campos para fazer o cadastro" });
     }
-   
-    const user = await userService.create(req.body);
 
-    const file = req.file;
+    const user = await userService.create(req.body);
 
     if (!user) {
       return res.status(400).send({ message: "Erro na criação do usuário" });
     }
-        
 
     res.status(201).send({
-      message: 'Usuário criado com sucesso',
+      message: "Usuário criado com sucesso",
       user: {
-        id: user._id,
+        _id: user._id,
         name,
         lastName,
         email,
-        avatar: file.path,
-      }
+      },
     });
   } catch (err) {
     res.status(500).send({ message: err.message });
@@ -71,28 +67,38 @@ const updateUser = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { name, lastName, email, password, country, avatar } = req.body;
+    const { name, lastName, email, country } = req.body;
 
-    if (!name && !lastName && !email && !password && !country && !avatar) {
-      res.status(400).send({ message: "Preencha ao menos um campo para atualização" });
-    };
+    if (!name && !lastName && !email && !country ) {
+      res
+        .status(400)
+        .send({ message: "Preencha ao menos um campo para atualização" });
+    }
 
- 
-    const { id, user } = req;
+    const id = req.params.id;
 
     const userToUpdate = await userService.findById(id);
 
     if (!userToUpdate) {
-      return res.status(404).send({ message: "Projeto não encontrado" });
-  }
-
-  if (req.file) {
-    // Excluir o arquivo existente
-    fs.unlinkSync(userToUpdate.avatar);
-    userToUpdate.avatar = req.file.path; // Atualizar com o novo arquivo
+      return res.status(404).send({ message: "Usuário não encontrado" });
     }
 
-    await userService.update(id, name, lastName, email, password, country, userToUpdate.avatar);
+    if (req.file) {
+      // Excluir o arquivo se ele existir
+      if(fs.existsSync(userToUpdate.avatar)){
+        fs.unlinkSync(userToUpdate.avatar);
+      }
+      userToUpdate.avatar = req.file.path; // Atualizar com o novo arquivo
+    }
+
+    await userService.update(
+      id,
+      name,
+      lastName,
+      email,
+      country,
+      userToUpdate?.avatar
+    );
 
     res.send({ message: "Usuário atualizado com sucesso" });
   } catch (err) {

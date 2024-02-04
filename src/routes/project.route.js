@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/", projectController.findAllProjects);
 router.get("/:id", validId, projectController.findProjectById);
-router.get("/user/:id", validId, projectController.findProjectByUserId);
+router.get("/user/:id", projectController.findProjectByUserId);
 
 
 router.post("/", upload.single('file'),//no front colocamos um filter para Cannot read properties of undefined (reading 'path')"
@@ -21,7 +21,7 @@ body('title').isLength({min: 2, max: 150}).withMessage("Use um nome válido"),
 body('description').isLength({min: 1, max: 300}).withMessage("Coloque uma descrição com menos de 300 caracteres"),
 projectController.createProject);
 
-router.patch("/:id", validId, upload.single('file'),
+router.patch("/:id", upload.single('file'),
 
 
  projectController.updateProject);
