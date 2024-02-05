@@ -33,7 +33,7 @@ const createUser = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { name, lastName, email, _id } = req.body;
+    const { name, lastName, email, _id, avatar } = req.body;
 
     if (!name || !lastName || !email || !_id ) {
       res
@@ -67,9 +67,9 @@ const updateUser = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { name, lastName, email, country } = req.body;
+    const { name, lastName, email, country, avatar } = req.body;
 
-    if (!name && !lastName && !email && !country ) {
+    if (!name && !lastName && !email && !country && !avatar ) {
       res
         .status(400)
         .send({ message: "Preencha ao menos um campo para atualização" });
@@ -89,6 +89,8 @@ const updateUser = async (req, res) => {
         fs.unlinkSync(userToUpdate.avatar);
       }
       userToUpdate.avatar = req.file.path; // Atualizar com o novo arquivo
+    }else if(avatar){
+      userToUpdate.avatar = avatar; // Atualizar com o novo arquivo
     }
 
     await userService.update(
